@@ -21,6 +21,8 @@ static int add_other2(char **out, struct stat *s,
     for (int i = 0; i++ < flgs->col_size - exp; add_buffer(out, " ", 1));
     my_sprintf(tmp, "%lld ", s->st_size) &&
         add_buffer(out, tmp, my_strlen(tmp));
+    add_buffer(out, ctime(&s->st_mtime) + 4, 12);
+    add_buffer(out, " ", 1);
     return 0;
 }
 

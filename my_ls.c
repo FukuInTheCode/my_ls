@@ -72,7 +72,7 @@ static int find_files(my_lsflags_t *flgs, char **s[3], int argc)
 int main(int argc, char **argv)
 {
     my_lsflags_t flgs = {false, false, false, false,
-        false, false, false, false, 0, 0, 0, 0};
+        false, false, false, false, 0, 0, 0, 0, 0};
     bool no_dir_arg = true;
     char *buffer = malloc(1);
     char **files = malloc(sizeof(char *));

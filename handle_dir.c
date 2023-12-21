@@ -28,7 +28,8 @@ static int my_revcmp(char *a, char *b)
     return my_strcmp(b, a);
 }
 
-static int inside_loop(my_lsflags_t *flgs, char complete_path[1000])
+static int inside_loop(my_lsflags_t *flgs, char complete_path[1000],
+    struct dirent *file)
 {
     struct stat s;
     int error = lstat(complete_path, &s);
@@ -36,6 +37,8 @@ static int inside_loop(my_lsflags_t *flgs, char complete_path[1000])
     struct group *grp = getgrgid(s.st_gid);
     int exp = my_fexpn(s.st_size, 10, NULL) + 1;
 
+    flgs->total_blck += s.st_blocks / 2 * (file->d_name[0] != '.' ||
+        flgs->has_a);
     (exp > flgs->col_size) && (flgs->col_size = exp);
     exp = my_fexpn(s.st_nlink, 10, NULL) + 1;
     (exp > flgs->col_link) && (flgs->col_link = exp);
@@ -56,11 +59,12 @@ static int find_col_format(struct dirent **files,
     flgs->col_gr = 0;
     flgs->col_pw = 0;
     flgs->col_link = 0;
+    flgs->total_blck = 0;
     for (int i = 0; files[i]; i++) {
         my_sprintf(complete_path, "%s/%s", path, files[i]->d_name);
         if (path[my_strlen(path) - 1] == '/')
             my_sprintf(complete_path, "%s%s", path, files[i]->d_name);
-        error |= inside_loop(flgs, complete_path);
+        error |= inside_loop(flgs, complete_path, files[i]);
     }
     return error;
 }
@@ -70,6 +74,7 @@ static int read_files(DIR *dir, my_lsflags_t *flgs,
 {
     struct dirent **files = malloc(sizeof(struct dirent *));
     int error = 0;
+    char tmp[1000] = {0};
 
     if (!files)
         return 84;
@@ -79,6 +84,8 @@ static int read_files(DIR *dir, my_lsflags_t *flgs,
     my_advanced_sort_entry_array(files, my_strcmp);
     flgs->has_r && my_advanced_sort_entry_array(files, my_revcmp);
     find_col_format(files, flgs, path);
+    (flgs->has_l) && my_sprintf(tmp, "total %lld\n", flgs->total_blck) &&
+        add_buffer(buf, tmp, my_strlen(tmp));
     for (int i = 0; files[i]; i++)
         error |= read_file(files[i], flgs, buf, path);
     return error;

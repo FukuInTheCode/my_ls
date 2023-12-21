@@ -51,6 +51,7 @@ typedef struct {
     int col_link;
     int col_pw;
     int col_gr;
+    long long total_blck;
 } my_lsflags_t;
 
 typedef struct {
