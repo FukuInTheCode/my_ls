@@ -38,16 +38,6 @@ static char **add_file(char const *path, char ***files)
     return tmp;
 }
 
-static int my_cmp(char const *a, char const *b)
-{
-    return my_strcmp(a, b);
-}
-
-static int my_revcmp(char const *a, char const *b)
-{
-    return my_strcmp(b, a);
-}
-
 static int find_files(my_lsflags_t *flgs, char **s[3], int argc)
 {
     char **buffer = s[0];
@@ -59,7 +49,7 @@ static int find_files(my_lsflags_t *flgs, char **s[3], int argc)
     for (int i = 1; i < argc; i++)
         (my_strncmp("-", argv[i], 1) ||
         1 == my_strlen(argv[i])) && add_file(argv[i], &files);
-    (!flgs->has_r && (my_advanced_sort_word_array(files, my_cmp) || 1)) ||
+    (!flgs->has_r && (my_advanced_sort_word_array(files, my_strcmp) || 1)) ||
         my_advanced_sort_word_array(files, my_revcmp);
     for (; files[len]; len++);
     (len <= 1) && (flgs->is_one = true);
@@ -87,8 +77,8 @@ int main(int argc, char **argv)
             (find_flgs(argv[i] + 1, &flgs) || 1)) || (no_dir_arg = false);
     (no_dir_arg || argc == 1) && add_file(".", &files);
     error |= find_files(&flgs, (char **[3]){ &buffer, argv, files }, argc);
-    my_nprintf(my_strlen(buffer) + (!flgs.has_l || (flgs.has_d && !flgs.has_l)),
-        "%s\n", buffer);
+    my_nprintf(my_strlen(buffer) + (!flgs.has_l ||
+        (flgs.has_d && !flgs.has_l)), "%s\n", buffer);
     free(buffer);
     return error;
 }

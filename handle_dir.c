@@ -23,11 +23,6 @@ static struct dirent **add_entry(struct dirent *entry, struct dirent ***files)
     return tmp;
 }
 
-static int my_revcmp(char *a, char *b)
-{
-    return my_strcmp(b, a);
-}
-
 static int inside_loop(my_lsflags_t *flgs, char complete_path[1000],
     struct dirent *file)
 {
@@ -105,25 +100,32 @@ static int read_files(DIR *dir, my_lsflags_t *flgs,
     return error;
 }
 
-int read_dir(char const *path, my_lsflags_t *flgs, char **buf, bool is_last)
+static int handle_d_flag(my_lsflags_t *flgs, char const *path,
+    bool is_last, char **buf)
 {
     char ret[1000] = {0};
-    DIR *dir = opendir(path);
-    int error = 0;
     struct dirent self = {0, 0, 0, 0, {0}};
     struct dirent *self_arr[] = {&self, NULL};
+
+    !flgs->has_l && my_snprintf(ret, my_strlen(path) + !is_last, "%s ", path);
+    !flgs->has_l && add_buffer(buf, ret, my_strlen(ret));
+    for (int i = 0; i++ < my_strlen(path); self.d_name[i - 1] = path[i - 1]);
+    flgs->has_l && find_col_format(self_arr, flgs, "");
+    flgs->has_l && read_file(&self, flgs, buf, "");
+    return 0;
+}
+
+int read_dir(char const *path, my_lsflags_t *flgs, char **buf, bool is_last)
+{
+    DIR *dir = opendir(path);
+    int error = 0;
 
     !dir && my_dprintf(2, "ls: cannot access '%s': ", path);
     !dir && my_dprintf(2, "No such file or directory\n");
     if (!dir)
         return 84;
-    flgs->has_d && !flgs->has_l && my_snprintf(ret, my_strlen(path) + !is_last,"%s ", path);
-    flgs->has_d && !flgs->has_l && add_buffer(buf, ret, my_strlen(ret));
-    for (int i = 0; i++ < my_strlen(path); self.d_name[i - 1] = path[i - 1]);
-    flgs->has_d && flgs->has_l && find_col_format(self_arr, flgs, "");
-    flgs->has_d && flgs->has_l && read_file(&self, flgs, buf, "");
     if (flgs->has_d)
-        return 0;
+        return handle_d_flag(flgs, path, is_last, buf);
     flgs->print_name && add_buffer(buf, (void *)path, my_strlen(path));
     flgs->print_name && add_buffer(buf, ":\n", 2);
     error |= read_files(dir, flgs, buf, path);

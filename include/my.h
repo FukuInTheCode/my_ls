@@ -61,6 +61,7 @@ typedef struct {
 
 int my_strncmp(char const *, char const *, int);
 int my_strcmp(char const *, char const *);
+int my_revcmp(char const *, char const *);
 int my_timecmp(time_t, time_t);
 int my_revtimecmp(time_t, time_t);
 int my_advanced_sort_word_array(char **, int(*cmp)());
