@@ -63,13 +63,13 @@ static int get_flags(char **buffer, char const *fmt, int *i, va_list args)
     return 0;
 }
 
-int my_fprintf(FILE *stream, char const *format, ...)
+int my_saprintf(char **to, char *str, char const *format, ...)
 {
     va_list args;
-    char *buffer = malloc(1);
+    char *buffer = my_strdup("");
     int ret;
 
-    buffer[0] = 0;
+    *to = my_strdup(str);
     va_start(args, format);
     for (int i = 0; format[i]; i++) {
         if (format[i] == '%')
@@ -78,7 +78,8 @@ int my_fprintf(FILE *stream, char const *format, ...)
             add_buffer(&buffer, (void *)(format + i), 1);
     }
     va_end(args);
-    ret = fwrite(buffer, my_strlen(buffer), 1, stream);
+    ret = my_strlen(buffer);
+    add_buffer(to, buffer, ret);
     free(buffer);
     return ret;
 }

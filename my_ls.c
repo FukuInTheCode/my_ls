@@ -48,12 +48,34 @@ static int my_revcmp(char const *a, char const *b)
     return my_strcmp(b, a);
 }
 
+static int find_files(my_lsflags_t *flgs, char **s[3], int argc)
+{
+    char **buffer = s[0];
+    char **argv = s[1];
+    char **files = s[2];
+    int len = 0;
+    int error = 0;
+
+    for (int i = 1; i < argc; i++)
+        (my_strncmp("-", argv[i], 1) ||
+        1 == my_strlen(argv[i])) && add_file(argv[i], &files);
+    (!flgs->has_r && (my_advanced_sort_word_array(files, my_cmp) || 1)) ||
+        my_advanced_sort_word_array(files, my_revcmp);
+    for (; files[len]; len++);
+    (len <= 1) && (flgs->is_one = true);
+    for (int i = 0; files[i]; i++)
+        error |= read_dir(files[i], flgs, buffer);
+    return error;
+}
+
 int main(int argc, char **argv)
 {
-    my_lsflags_t flgs = {false, false, false, false, false, false};
+    my_lsflags_t flgs = {false, false, false, false,
+        false, false, false};
     bool no_dir_arg = true;
     char *buffer = malloc(1);
     char **files = malloc(sizeof(char *));
+    int error = 0;
 
     if (!buffer || !files)
         return 84;
@@ -63,13 +85,10 @@ int main(int argc, char **argv)
         (!my_strncmp(argv[i], "-", 1) && 1 != my_strlen(argv[i]) &&
             (find_flgs(argv[i] + 1, &flgs) || 1)) || (no_dir_arg = false);
     if (no_dir_arg || argc == 1)
-        read_dir(".", &flgs, &buffer);
-    for (int i = 1; i < argc; (my_strncmp("-", argv[i++], 1) ||
-        1 == my_strlen(argv[i - 1])) && add_file(argv[i - 1], &files));
-    (!flgs.has_r && (my_advanced_sort_word_array(files, my_cmp) || 1)) ||
-        my_advanced_sort_word_array(files, my_revcmp);
-    for (int i = 0; files[i]; read_dir(files[i++], &flgs, &buffer));
-    my_printf("%s\n", buffer);
+        add_file(".", &files);
+    error |= find_files(&flgs, (char **[3]){ &buffer, argv, files }, argc);
+    my_nprintf(my_strlen(buffer) + (my_strlen(buffer) != 0),
+        "%s\n", buffer);
     free(buffer);
-    return 0;
+    return error;
 }

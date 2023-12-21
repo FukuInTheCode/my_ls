@@ -22,8 +22,12 @@ LIBS = -L./lib/my_printf -lmy_printf
 SRC	= my_ls.c \
 		flags/l_flags.c \
 		flags/d_flags.c \
+		flags/r_flags.c \
+		flags/a_flags.c \
 		handle_dir.c \
+		handle_file.c \
 		my_advanced_sort_word_array.c \
+		my_advanced_sort_entry_array.c \
 		my_strcmp.c \
 
 OBJ	= $(SRC:.c=.o)

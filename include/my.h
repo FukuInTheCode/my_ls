@@ -17,7 +17,8 @@
     #include <fcntl.h>
     #include <math.h>
     #include <stdlib.h>
-
+    #include <sys/types.h>
+    #include <dirent.h>
     #include <criterion/criterion.h>
     #include <criterion/redirect.h>
 
@@ -41,6 +42,7 @@ typedef struct {
     bool has_d;
     bool has_r;
     bool has_tmin;
+    bool is_one;
 } my_lsflags_t;
 
 typedef struct {
@@ -52,16 +54,20 @@ int my_strncmp(char const *, char const *, int);
 int my_strcmp(char const *, char const *);
 int my_advanced_sort_word_array(char **, int(*cmp)());
 int read_dir(char const *, my_lsflags_t *, char **);
+int read_file(struct dirent *, my_lsflags_t *, char **, char const *);
+int my_advanced_sort_entry_array(struct dirent **tab, int(*cmp)());
 
 int l_flag_f(my_lsflags_t *);
 int d_flag_f(my_lsflags_t *);
+int a_flag_f(my_lsflags_t *);
+int r_flag_f(my_lsflags_t *);
 
 static my_lsstruct_t const ls_flgs[] = {
-//    {"a", a_flag_f},
+    {"a", a_flag_f},
     {"l", l_flag_f},
 //    {"rmaj", a_flgs_f},
     {"d", d_flag_f},
-//    {"r", a_flgs_f},
+    {"r", r_flag_f},
 //    {"tmin", a_flgs_f},
     {NULL, NULL}
 };

@@ -17,6 +17,7 @@ SRC	= my_revstr.c	\
 			my_put_lfloat.c	\
 			my_put_nbr.c	\
 			my_strncat.c	\
+			my_strdup.c	\
 			my_floor.c	\
 			my_getnbr.c	\
 			formats/p_format.c	\
@@ -64,11 +65,10 @@ SRC	= my_revstr.c	\
 			my_vprintf.c	\
 			my_nprintf.c	\
 			my_vnprintf.c	\
-			my_fprintf.c	\
-			my_vfprintf.c	\
 			my_dprintf.c	\
 			my_vdprintf.c	\
 			my_sprintf.c	\
+			my_saprintf.c	\
 			my_vsprintf.c	\
 			my_snprintf.c	\
 			my_vsnprintf.c	\
