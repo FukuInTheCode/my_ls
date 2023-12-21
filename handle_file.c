@@ -69,26 +69,31 @@ static int file_stat(struct dirent *entry, my_lsflags_t *flgs,
     struct stat s;
     int error = 0;
     char *out = NULL;
+    char lnk_path[1000] = {0};
 
     my_sprintf(file_path, "%s/%s", path, entry->d_name);
     if (path[my_strlen(path) - 1] == '/')
         my_sprintf(file_path, "%s%s", path, entry->d_name);
     error |= -84 * lstat(file_path, &s);
-    add_perm(&out, &s, flgs);
-    add_buffer(buf, out, my_strlen(out));
+    flgs->has_l && add_perm(&out, &s, flgs);
+    out && add_buffer(buf, out, my_strlen(out));
     free(out);
+    add_buffer(buf, entry->d_name, my_strlen(entry->d_name));
+    S_ISLNK(s.st_mode) && flgs->has_l && add_buffer(buf, " -> ", 4);
+    S_ISLNK(s.st_mode) && flgs->has_l && readlink(file_path, lnk_path, 1000);
+    S_ISLNK(s.st_mode) && flgs->has_l && add_buffer(buf, lnk_path, my_strlen(lnk_path));
     return error;
 }
 
 int read_file(struct dirent *entry, my_lsflags_t *flgs, char **buf,
     char const *path)
 {
+    int error = 0;
+
     if (entry->d_name[0] == '.' && !flgs->has_a)
-        return 0;
-    if (flgs->has_l)
-        file_stat(entry, flgs, buf, path);
-    add_buffer(buf, entry->d_name, my_strlen(entry->d_name));
+        return error;
+    error |= file_stat(entry, flgs, buf, path);
     !flgs->has_l && add_buffer(buf, " ", 1);
     flgs->has_l && add_buffer(buf, "\n", 1);
-    return 0;
+    return error;
 }
