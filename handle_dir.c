@@ -7,6 +7,7 @@
 
 #include "lib/my_printf/include/my.h"
 #include "my.h"
+#include <errno.h>
 
 static struct dirent **add_entry(struct dirent *entry, struct dirent ***files)
 {
@@ -120,18 +121,17 @@ static int handle_d_flag(my_lsflags_t *flgs, char const *path, bool is_last,
 int read_dir(char const *path, my_lsflags_t *flgs, char **buf, bool is_last)
 {
     DIR *dir = opendir(path);
-    int error = 0;
+    int err = errno;
 
-    !dir && my_dprintf(2, "ls: cannot access '%s': ", path);
-    !dir && my_dprintf(2, "No such file or directory\n");
-    if (!dir)
+    !dir && err != ENOTDIR && my_dprintf(2, "ls: cannot access '%s': ", path);
+    !dir && err != ENOTDIR && my_dprintf(2, "No such file or directory\n");
+    if (!dir && err != ENOTDIR)
         return 84;
-    if (flgs->has_d)
+    if (flgs->has_d || err == ENOTDIR)
         return handle_d_flag(flgs, path, is_last, buf);
     flgs->print_name && add_buffer(buf, (void *)path, my_strlen(path));
     flgs->print_name && add_buffer(buf, ":\n", 2);
-    error |= read_files(dir, flgs, buf, path);
+    err |= read_files(dir, flgs, buf, path);
     add_buffer(buf, "\n\n", 1 + !is_last && !flgs->has_l);
-    return error;
+    return err;
 }
-

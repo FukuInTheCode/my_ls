@@ -18,6 +18,7 @@ static int add_other2(char **out, struct stat *s,
         add_buffer(out, " ", 1);
     my_sprintf(tmp, "%s ", grp->gr_name);
     add_buffer(out, tmp, my_strlen(tmp));
+    for (int i = 0; i++ < flgs->col_size - exp; add_buffer(out, " ", 1));
     if (S_ISCHR(s->st_mode) || S_ISBLK(s->st_mode))
         my_sprintf(tmp, "%ld, %ld ", major(s->st_rdev), minor(s->st_rdev));
     else {
