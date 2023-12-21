@@ -62,6 +62,10 @@ static int add_perm(char **out, struct stat *s, my_lsflags_t *flgs)
     add_buffer(out, S_IROTH & s-> st_mode ? "r" : "-", 1);
     add_buffer(out, S_IWOTH & s-> st_mode ? "w" : "-", 1);
     add_buffer(out, S_IXOTH & s-> st_mode ? "x " : "- ", 2);
+    s->st_mode & S_ISVTX && (*out)[my_strlen(*out) - 2] == 'x' &&
+        ((*out)[my_strlen(*out) - 2] = 't');
+    s->st_mode & S_ISVTX && (*out)[my_strlen(*out) - 2] == '-' &&
+        ((*out)[my_strlen(*out) - 2] = 'T');
     add_other(out, s, flgs);
     return 0;
 }
