@@ -45,10 +45,11 @@ static int read_files(DIR *dir, my_lsflags_t *flgs, char **buf, char const *path
     return error;
 }
 
-int read_dir(char const *path, my_lsflags_t *flgs, char **buf)
+int read_dir(char const *path, my_lsflags_t *flgs, char **buf, bool is_last)
 {
     char *ret = NULL;
     DIR *dir = opendir(path);
+    int error = 0;
 
     if (!dir) {
         my_dprintf(2, "ls: cannot access '%s': ", path);
@@ -56,10 +57,15 @@ int read_dir(char const *path, my_lsflags_t *flgs, char **buf)
         return 84;
     }
     if (flgs->has_d) {
-        my_saprintf(&ret, "", "%s ", path);
+        my_saprintf(&ret, "", "%s", path);
         add_buffer(buf, ret, my_strlen(ret));
+        add_buffer(buf, " ", !is_last);
         free(ret);
         return 0;
     }
-    return read_files(dir, flgs, buf, path);
+    flgs->print_name && add_buffer(buf, (void *)path, my_strlen(path));
+    flgs->print_name && add_buffer(buf, ":\n", 2);
+    error |= read_files(dir, flgs, buf, path);
+    add_buffer(buf, "\n\n", 1 + !is_last);
+    return error;
 }

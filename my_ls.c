@@ -63,15 +63,16 @@ static int find_files(my_lsflags_t *flgs, char **s[3], int argc)
         my_advanced_sort_word_array(files, my_revcmp);
     for (; files[len]; len++);
     (len <= 1) && (flgs->is_one = true);
+    (len > 1) && (flgs->print_name = true);
     for (int i = 0; files[i]; i++)
-        error |= read_dir(files[i], flgs, buffer);
+        error |= read_dir(files[i], flgs, buffer, files[i + 1] == NULL);
     return error;
 }
 
 int main(int argc, char **argv)
 {
     my_lsflags_t flgs = {false, false, false, false,
-        false, false, false};
+        false, false, false, false};
     bool no_dir_arg = true;
     char *buffer = malloc(1);
     char **files = malloc(sizeof(char *));
@@ -87,7 +88,7 @@ int main(int argc, char **argv)
     if (no_dir_arg || argc == 1)
         add_file(".", &files);
     error |= find_files(&flgs, (char **[3]){ &buffer, argv, files }, argc);
-    my_nprintf(my_strlen(buffer) + (my_strlen(buffer) != 0),
+    my_nprintf(my_strlen(buffer) + (my_strlen(buffer) != 0 && flgs.has_d),
         "%s\n", buffer);
     free(buffer);
     return error;

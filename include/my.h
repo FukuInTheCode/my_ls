@@ -43,6 +43,7 @@ typedef struct {
     bool has_r;
     bool has_tmin;
     bool is_one;
+    bool print_name;
 } my_lsflags_t;
 
 typedef struct {
@@ -53,7 +54,7 @@ typedef struct {
 int my_strncmp(char const *, char const *, int);
 int my_strcmp(char const *, char const *);
 int my_advanced_sort_word_array(char **, int(*cmp)());
-int read_dir(char const *, my_lsflags_t *, char **);
+int read_dir(char const *, my_lsflags_t *, char **, bool is_last);
 int read_file(struct dirent *, my_lsflags_t *, char **, char const *);
 int my_advanced_sort_entry_array(struct dirent **tab, int(*cmp)());
 
