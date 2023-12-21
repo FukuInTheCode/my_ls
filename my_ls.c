@@ -87,7 +87,7 @@ int main(int argc, char **argv)
             (find_flgs(argv[i] + 1, &flgs) || 1)) || (no_dir_arg = false);
     (no_dir_arg || argc == 1) && add_file(".", &files);
     error |= find_files(&flgs, (char **[3]){ &buffer, argv, files }, argc);
-    my_nprintf(my_strlen(buffer) + (!flgs.has_l || flgs.has_d),
+    my_nprintf(my_strlen(buffer) + (!flgs.has_l || (flgs.has_d && !flgs.has_l)),
         "%s\n", buffer);
     free(buffer);
     return error;

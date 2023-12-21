@@ -72,7 +72,7 @@ static int file_stat(struct dirent *entry, my_lsflags_t *flgs,
     char lnk_path[1000] = {0};
 
     my_sprintf(file_path, "%s/%s", path, entry->d_name);
-    if (path[my_strlen(path) - 1] == '/')
+    if (!my_strlen(path) || path[my_strlen(path) - 1] == '/')
         my_sprintf(file_path, "%s%s", path, entry->d_name);
     error |= -84 * lstat(file_path, &s);
     flgs->has_l && add_perm(&out, &s, flgs);
@@ -91,7 +91,7 @@ int read_file(struct dirent *entry, my_lsflags_t *flgs, char **buf,
 {
     int error = 0;
 
-    if (entry->d_name[0] == '.' && !flgs->has_a)
+    if (entry->d_name[0] == '.' && !flgs->has_a && !flgs->has_d)
         return error;
     error |= file_stat(entry, flgs, buf, path);
     !flgs->has_l && add_buffer(buf, " ", 1);

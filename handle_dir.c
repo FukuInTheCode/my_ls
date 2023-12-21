@@ -62,7 +62,7 @@ static int find_col_format(struct dirent **files,
     flgs->total_blck = 0;
     for (int i = 0; files[i]; i++) {
         my_sprintf(complete_path, "%s/%s", path, files[i]->d_name);
-        if (path[my_strlen(path) - 1] == '/')
+        if (!my_strlen(path) || path[my_strlen(path) - 1] == '/')
             my_sprintf(complete_path, "%s%s", path, files[i]->d_name);
         error |= inside_loop(flgs, complete_path, files[i]);
     }
@@ -107,18 +107,21 @@ static int read_files(DIR *dir, my_lsflags_t *flgs,
 
 int read_dir(char const *path, my_lsflags_t *flgs, char **buf, bool is_last)
 {
-    char *ret = NULL;
+    char ret[1000] = {0};
     DIR *dir = opendir(path);
     int error = 0;
+    struct dirent self = {0, 0, 0, 0, {0}};
+    struct dirent *self_arr[] = {&self, NULL};
 
     !dir && my_dprintf(2, "ls: cannot access '%s': ", path);
     !dir && my_dprintf(2, "No such file or directory\n");
     if (!dir)
         return 84;
-    flgs->has_d && my_saprintf(&ret, "", "%s", path);
-    flgs->has_d && add_buffer(buf, ret, my_strlen(ret));
-    flgs->has_d && add_buffer(buf, " ", !is_last);
-    free(ret);
+    flgs->has_d && !flgs->has_l && my_snprintf(ret, my_strlen(path) + !is_last,"%s ", path);
+    flgs->has_d && !flgs->has_l && add_buffer(buf, ret, my_strlen(ret));
+    for (int i = 0; i++ < my_strlen(path); self.d_name[i - 1] = path[i - 1]);
+    flgs->has_d && flgs->has_l && find_col_format(self_arr, flgs, "");
+    flgs->has_d && flgs->has_l && read_file(&self, flgs, buf, "");
     if (flgs->has_d)
         return 0;
     flgs->print_name && add_buffer(buf, (void *)path, my_strlen(path));
