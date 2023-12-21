@@ -1,0 +1,41 @@
+##
+## EPITECH PROJECT, 2023
+## my_ls Makefile
+## File description:
+## Placeholder
+##
+
+NAME   = my_ls
+
+CC	   = gcc
+
+CFLAGS = -Wall -Wextra -Wno-unused-value -Wno-sign-compare \
+	-Wno-unused-parameter -I./include
+
+CSFML = -lcsfml-system -lcsfml-window -lcsfml-network \
+			-lcsfml-graphics -lcsfml-audio
+
+CRITERION = -lcriterion
+
+LIBS = -L./lib/my_printf -lmy_printf
+
+SRC	= my_ls.c \
+		flags/l_flags.c
+
+OBJ	= $(SRC:.c=.o)
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	@make -C./lib/my_printf re
+	@$(CC) -o $(NAME) $(OBJ) $(CFLAGS) $(LIBS)
+
+clean:
+	@rm -f $(OBJ)
+	@make -C./lib/my_printf clean
+
+fclean: clean
+	@rm -f $(NAME)
+	@make -C./lib/my_printf fclean
+
+re: fclean all
