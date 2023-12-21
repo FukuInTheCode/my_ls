@@ -6,8 +6,8 @@
 */
 
 
-#ifndef MY_H
-    #define MY_H
+#ifndef MYPRINTF_H
+    #define MYPRINTF_H
     #include <stdio.h>
     #include <unistd.h>
     #include <stdint.h>
@@ -40,6 +40,17 @@ typedef struct {
 } my_struct_t;
 
 int my_printf(char const *, ...);
+int my_vprintf(char const *, va_list args);
+int my_nprintf(size_t size, char const *, ...);
+int my_vnprintf(size_t size, char const *, va_list args);
+int my_fprintf(FILE *, char const *, ...);
+int my_vfprintf(FILE *, char const *, va_list args);
+int my_dprintf(int, char const *, ...);
+int my_vdprintf(int, char const *, va_list args);
+int my_sprintf(char *, char const *, ...);
+int my_vsprintf(char *, char const *, va_list args);
+int my_snprintf(char *, size_t size, char const *, ...);
+int my_vsnprintf(char *, size_t size, char const *, va_list args);
 int hastag_flag_f(my_flags_t *);
 int minus_flag_f(my_flags_t *);
 int plus_flag_f(my_flags_t *);
@@ -67,6 +78,7 @@ int my_lfexpn(long double, int, long double *);
 int c_format_f(char **, va_list, my_flags_t *);
 
 int di_format_f(char **, va_list, my_flags_t *);
+int rdi_format_f(char **, va_list, my_flags_t *);
 int ldi_format_f(char **, va_list, my_flags_t *);
 int zdi_format_f(char **, va_list, my_flags_t *);
 int lldi_format_f(char **, va_list, my_flags_t *);
@@ -79,6 +91,7 @@ int e_format_f(char **, va_list, my_flags_t *);
 int emaj_format_f(char **, va_list, my_flags_t *);
 
 int s_format_f(char **, va_list, my_flags_t *);
+int rs_format_f(char **, va_list, my_flags_t *);
 
 int u_format_f(char **, va_list, my_flags_t *);
 
@@ -119,18 +132,21 @@ static my_struct_t const types[] = {
     {"lln", lln_format_f},
     {"zn", zn_format_f},
     {"d", di_format_f},
+    {"rd", rdi_format_f},
     {"hhd", di_format_f},
     {"hd", di_format_f},
     {"ld", ldi_format_f},
     {"lld", lldi_format_f},
     {"zd", zdi_format_f},
     {"i", di_format_f},
+    {"ri", rdi_format_f},
     {"hhi", di_format_f},
     {"hi", di_format_f},
     {"li", ldi_format_f},
     {"lli", lldi_format_f},
     {"zi", zdi_format_f},
     {"s", s_format_f},
+    {"rs", rs_format_f},
     {"hhs", s_format_f},
     {"hs", s_format_f},
     {"ls", nothing_format_f},

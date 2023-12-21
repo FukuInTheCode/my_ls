@@ -30,6 +30,8 @@
     #include <SFML/System.h>
     #include <SFML/Window.h>
 
+    #include "../lib/my_printf/include/my.h"
+
 typedef int(*func)();
 
 typedef struct {
@@ -46,19 +48,19 @@ typedef struct {
     func f;
 } my_lsstruct_t;
 
-int my_printf(char const *, ...);
-size_t my_strlen(char const *);
 int my_strncmp(char const *, char const *, int);
-
-int read_dir(char const *, my_lsflags_t *);
+int my_strcmp(char const *, char const *);
+int my_advanced_sort_word_array(char **, int(*cmp)());
+int read_dir(char const *, my_lsflags_t *, char **);
 
 int l_flag_f(my_lsflags_t *);
+int d_flag_f(my_lsflags_t *);
 
 static my_lsstruct_t const ls_flgs[] = {
 //    {"a", a_flag_f},
     {"l", l_flag_f},
 //    {"rmaj", a_flgs_f},
-//    {"d", a_flgs_f},
+    {"d", d_flag_f},
 //    {"r", a_flgs_f},
 //    {"tmin", a_flgs_f},
     {NULL, NULL}

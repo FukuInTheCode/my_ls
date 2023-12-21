@@ -1,6 +1,6 @@
 ##
 ## EPITECH PROJECT, 2023
-## my_printf Makefile
+## my_printf Bonus Makefile
 ## File description:
 ## Placeholder
 ##
@@ -42,6 +42,8 @@ SRC	= my_revstr.c	\
 			formats/s_format.c	\
 			formats/di_format.c	\
 			formats/ldi_format.c	\
+			formats/rdi_format.c	\
+			formats/rs_format.c	\
 			formats/lldi_format.c	\
 			formats/zdi_format.c	\
 			formats/c_format.c	\
@@ -59,6 +61,17 @@ SRC	= my_revstr.c	\
 			my_fexpn.c	\
 			my_lfexpn.c	\
 			my_printf.c	\
+			my_vprintf.c	\
+			my_nprintf.c	\
+			my_vnprintf.c	\
+			my_fprintf.c	\
+			my_vfprintf.c	\
+			my_dprintf.c	\
+			my_vdprintf.c	\
+			my_sprintf.c	\
+			my_vsprintf.c	\
+			my_snprintf.c	\
+			my_vsnprintf.c	\
 			my_put_unbr.c	\
 			my_put_lnbr.c	\
 			my_put_llnbr.c	\
@@ -69,7 +82,6 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@ar -rcs $(NAME) $(OBJ)
-	@cp $(NAME) ../$(NAME)
 
 clean:
 	@rm -f $(OBJ)
