@@ -61,14 +61,16 @@ int l_flag_f(my_lsflags_t *);
 int d_flag_f(my_lsflags_t *);
 int a_flag_f(my_lsflags_t *);
 int r_flag_f(my_lsflags_t *);
+int t_flag_f(my_lsflags_t *);
+int rmaj_flag_f(my_lsflags_t *);
 
 static my_lsstruct_t const ls_flgs[] = {
     {"a", a_flag_f},
     {"l", l_flag_f},
-//    {"rmaj", a_flgs_f},
+    {"rmaj", rmaj_flag_f},
     {"d", d_flag_f},
     {"r", r_flag_f},
-//    {"tmin", a_flgs_f},
+    {"tmin", t_flag_f},
     {NULL, NULL}
 };
 

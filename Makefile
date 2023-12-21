@@ -23,6 +23,8 @@ SRC	= my_ls.c \
 		flags/l_flags.c \
 		flags/d_flags.c \
 		flags/r_flags.c \
+		flags/t_flags.c \
+		flags/rmaj_flags.c \
 		flags/a_flags.c \
 		handle_dir.c \
 		handle_file.c \
