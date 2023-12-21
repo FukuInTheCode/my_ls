@@ -31,6 +31,7 @@ SRC	= my_ls.c \
 		my_advanced_sort_word_array.c \
 		my_advanced_sort_entry_array.c \
 		my_strcmp.c \
+		my_cmp.c \
 
 OBJ	= $(SRC:.c=.o)
 

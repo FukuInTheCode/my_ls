@@ -83,6 +83,9 @@ static int read_files(DIR *dir, my_lsflags_t *flgs,
         add_entry(entry, &files);
     my_advanced_sort_entry_array(files, my_strcmp);
     flgs->has_r && my_advanced_sort_entry_array(files, my_revcmp);
+    flgs->has_tmin && my_advanced_sort_entry_array2(files, my_revtimecmp, path);
+    flgs->has_tmin && flgs->has_r &&
+        my_advanced_sort_entry_array2(files, my_timecmp, path);
     find_col_format(files, flgs, path);
     (flgs->has_l) && my_sprintf(tmp, "total %lld\n", flgs->total_blck) &&
         add_buffer(buf, tmp, my_strlen(tmp));
