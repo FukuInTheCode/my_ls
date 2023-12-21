@@ -9,12 +9,16 @@
 
 int my_timecmp(time_t a, char const *str_a, time_t b, char const *str_b)
 {
+    int ret = (a > b) - (b > a);
+
+    if (ret == 0)
+        return my_strcmp(str_a, str_b);
     return (a > b) - (b > a);
 }
 
 int my_revtimecmp(time_t a, char const *str_a, time_t b, char const *str_b)
 {
-    return (a < b) - (b < a);
+    return -1 * my_timecmp(a, str_a, b, str_b);
 }
 
 int my_revcmp(char const *a, char const *b)
