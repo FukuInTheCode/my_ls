@@ -44,8 +44,7 @@ int my_advanced_sort_entry_array2(struct dirent **tab,
                 my_sprintf(path2, "%s%s", from, tab[j]->d_name);
             lstat(path1, &s1);
             lstat(path2, &s2);
-            my_cmp(tab, j - 1, j, cmp(s1.st_mtime,
-                tab[j - 1]->d_name, s2.st_mtime, tab[j]->d_name));
+            my_cmp(tab, j - 1, j, cmp(s1.st_mtime, s2.st_mtime));
         }
     }
     return 0;
