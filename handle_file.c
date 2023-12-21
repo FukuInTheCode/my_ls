@@ -81,7 +81,8 @@ static int file_stat(struct dirent *entry, my_lsflags_t *flgs,
     add_buffer(buf, entry->d_name, my_strlen(entry->d_name));
     S_ISLNK(s.st_mode) && flgs->has_l && add_buffer(buf, " -> ", 4);
     S_ISLNK(s.st_mode) && flgs->has_l && readlink(file_path, lnk_path, 1000);
-    S_ISLNK(s.st_mode) && flgs->has_l && add_buffer(buf, lnk_path, my_strlen(lnk_path));
+    S_ISLNK(s.st_mode) && flgs->has_l && add_buffer(buf, lnk_path,
+        my_strlen(lnk_path));
     return error;
 }
 

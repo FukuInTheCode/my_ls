@@ -26,7 +26,8 @@ int my_advanced_sort_entry_array(struct dirent **tab, int(*cmp)())
     return 0;
 }
 
-int my_advanced_sort_entry_array2(struct dirent **tab, int(*cmp)(), char const *from)
+int my_advanced_sort_entry_array2(struct dirent **tab,
+    int(*cmp)(), char const *from)
 {
     struct stat s1;
     struct stat s2;

@@ -69,28 +69,39 @@ static int find_col_format(struct dirent **files,
     return error;
 }
 
+static int read_files2(my_lsflags_t *flgs, struct dirent **files,
+    char const *path, char **buf)
+{
+    int error = 0;
+    char tmp[1000] = {0};
+
+    my_advanced_sort_entry_array(files, my_strcmp);
+    flgs->has_r && my_advanced_sort_entry_array(files, my_revcmp);
+    flgs->has_tmin && my_advanced_sort_entry_array2(files,
+        my_revtimecmp, path);
+    flgs->has_tmin && flgs->has_r &&
+        my_advanced_sort_entry_array2(files, my_timecmp, path);
+    find_col_format(files, flgs, path);
+    (flgs->has_l) && my_sprintf(tmp, "total %lld\n", flgs->total_blck) &&
+        add_buffer(buf, tmp, my_strlen(tmp));
+    return error;
+}
+
 static int read_files(DIR *dir, my_lsflags_t *flgs,
     char **buf, char const *path)
 {
     struct dirent **files = malloc(sizeof(struct dirent *));
     int error = 0;
-    char tmp[1000] = {0};
 
     if (!files)
         return 84;
     *files = NULL;
     for (struct dirent *entry = readdir(dir); entry; entry = readdir(dir))
         add_entry(entry, &files);
-    my_advanced_sort_entry_array(files, my_strcmp);
-    flgs->has_r && my_advanced_sort_entry_array(files, my_revcmp);
-    flgs->has_tmin && my_advanced_sort_entry_array2(files, my_revtimecmp, path);
-    flgs->has_tmin && flgs->has_r &&
-        my_advanced_sort_entry_array2(files, my_timecmp, path);
-    find_col_format(files, flgs, path);
-    (flgs->has_l) && my_sprintf(tmp, "total %lld\n", flgs->total_blck) &&
-        add_buffer(buf, tmp, my_strlen(tmp));
+    read_files2(flgs, files, path, buf);
     for (int i = 0; files[i]; i++)
         error |= read_file(files[i], flgs, buf, path);
+    free(files);
     return error;
 }
 

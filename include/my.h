@@ -67,7 +67,8 @@ int my_advanced_sort_word_array(char **, int(*cmp)());
 int read_dir(char const *, my_lsflags_t *, char **, bool is_last);
 int read_file(struct dirent *, my_lsflags_t *, char **, char const *);
 int my_advanced_sort_entry_array(struct dirent **tab, int(*cmp)());
-int my_advanced_sort_entry_array2(struct dirent **tab, int(*cmp)(), char const *);
+int my_advanced_sort_entry_array2(struct dirent **tab,
+    int(*cmp)(), char const *);
 
 int l_flag_f(my_lsflags_t *);
 int d_flag_f(my_lsflags_t *);
