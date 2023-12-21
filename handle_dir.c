@@ -118,13 +118,14 @@ static int handle_d_flag(my_lsflags_t *flgs, char const *path,
 int read_dir(char const *path, my_lsflags_t *flgs, char **buf, bool is_last)
 {
     DIR *dir = opendir(path);
-    int error = 0;
+    int error = errno;
 
-    !dir && my_dprintf(2, "ls: cannot access '%s': ", path);
-    !dir && my_dprintf(2, "No such file or directory\n");
-    if (!dir)
+    !dir && error != ENOTDIR && my_dprintf(2,
+        "ls: cannot access '%s': ", path);
+    !dir && error != ENOTDIR && my_dprintf(2, "No such file or directory\n");
+    if (!dir && error != ENOTDIR)
         return 84;
-    if (flgs->has_d)
+    if (flgs->has_d || error == ENOTDIR)
         return handle_d_flag(flgs, path, is_last, buf);
     flgs->print_name && add_buffer(buf, (void *)path, my_strlen(path));
     flgs->print_name && add_buffer(buf, ":\n", 2);
