@@ -48,7 +48,11 @@ static int add_perm(char **out, struct stat *s, my_lsflags_t *flgs)
 {
     S_ISDIR(s->st_mode) && my_saprintf(out, "", "d");
     S_ISLNK(s->st_mode) && my_saprintf(out, "", "l");
-    !S_ISLNK(s->st_mode) && !S_ISDIR(s->st_mode) && my_saprintf(out, "", "-");
+    S_ISBLK(s->st_mode) && my_saprintf(out, "", "b");
+    S_ISCHR(s->st_mode) && my_saprintf(out, "", "c");
+    !S_ISLNK(s->st_mode) && !S_ISDIR(s->st_mode) &&
+        !S_ISCHR(s->st_mode) && !S_ISBLK(s->st_mode) &&
+        my_saprintf(out, "", "-");
     add_buffer(out, S_IRUSR & s-> st_mode ? "r" : "-", 1);
     add_buffer(out, S_IWUSR & s-> st_mode ? "w" : "-", 1);
     add_buffer(out, S_IXUSR & s-> st_mode ? "x" : "-", 1);
