@@ -85,10 +85,10 @@ int main(int argc, char **argv)
     for (int i = 1; i < argc; i++)
         (!my_strncmp(argv[i], "-", 1) && 1 != my_strlen(argv[i]) &&
             (find_flgs(argv[i] + 1, &flgs) || 1)) || (no_dir_arg = false);
-    if (no_dir_arg || argc == 1)
-        add_file(".", &files);
+    (no_dir_arg || argc == 1) && add_file(".", &files);
     error |= find_files(&flgs, (char **[3]){ &buffer, argv, files }, argc);
-    my_nprintf(my_strlen(buffer) + (!flgs.has_l || flgs.has_d), "%s\n", buffer);
+    my_nprintf(my_strlen(buffer) + (!flgs.has_l || flgs.has_d),
+        "%s\n", buffer);
     free(buffer);
     return error;
 }

@@ -8,6 +8,22 @@
 
 #include "my.h"
 
+static int add_other2(char **out, struct stat *s,
+    my_lsflags_t *flgs, struct group *grp)
+{
+    int exp = my_fexpn(s->st_size, 10, NULL) + 1;
+    char tmp[1000] = {0};
+
+    for (int i = 0; i++ < flgs->col_gr - my_strlen(grp->gr_name);)
+        add_buffer(out, " ", 1);
+    my_sprintf(tmp, "%s ", grp->gr_name);
+    add_buffer(out, tmp, my_strlen(tmp));
+    for (int i = 0; i++ < flgs->col_size - exp; add_buffer(out, " ", 1));
+    my_sprintf(tmp, "%lld ", s->st_size) &&
+        add_buffer(out, tmp, my_strlen(tmp));
+    return 0;
+}
+
 static int add_other(char **out, struct stat *s, my_lsflags_t *flgs)
 {
     struct passwd *pwd = getpwuid(s->st_uid);
@@ -18,21 +34,19 @@ static int add_other(char **out, struct stat *s, my_lsflags_t *flgs)
     for (int i = 0; i++ < flgs->col_link - exp; add_buffer(out, " ", 1));
     my_sprintf(tmp, "%lld ", s->st_nlink);
     add_buffer(out, tmp, my_strlen(tmp));
-    for (int i = 0; i++ < flgs->col_pw - my_strlen(pwd->pw_name); add_buffer(out, " ", 1));
+    for (int i = 0; i++ < flgs->col_pw - my_strlen(pwd->pw_name);)
+        add_buffer(out, " ", 1);
     my_sprintf(tmp, "%s ", pwd->pw_name);
     add_buffer(out, tmp, my_strlen(tmp));
-    for (int i = 0; i++ < flgs->col_gr - my_strlen(grp->gr_name); add_buffer(out, " ", 1));
-    my_sprintf(tmp, "%s ", grp->gr_name);
-    add_buffer(out, tmp, my_strlen(tmp));
-    exp = my_fexpn(s->st_size, 10, NULL) + 1;
-    for (int i = 0; i++ < flgs->col_size - exp; add_buffer(out, " ", 1));
-    my_sprintf(tmp, "%lld ", s->st_size) && add_buffer(out, tmp, my_strlen(tmp));
+    add_other2(out, s, flgs, grp);
     return 0;
 }
 
 static int add_perm(char **out, struct stat *s, my_lsflags_t *flgs)
 {
-    my_saprintf(out, "", S_ISDIR(s->st_mode) ? "d" : S_ISLNK(s->st_mode) ? "l" : "-");
+    S_ISDIR(s->st_mode) && my_saprintf(out, "", "d");
+    S_ISLNK(s->st_mode) && my_saprintf(out, "", "l");
+    !S_ISLNK(s->st_mode) && !S_ISDIR(s->st_mode) && my_saprintf(out, "", "-");
     add_buffer(out, S_IRUSR & s-> st_mode ? "r" : "-", 1);
     add_buffer(out, S_IWUSR & s-> st_mode ? "w" : "-", 1);
     add_buffer(out, S_IXUSR & s-> st_mode ? "x" : "-", 1);
@@ -46,7 +60,8 @@ static int add_perm(char **out, struct stat *s, my_lsflags_t *flgs)
     return 0;
 }
 
-static int file_stat(struct dirent *entry, my_lsflags_t *flgs, char **buf, char const *path)
+static int file_stat(struct dirent *entry, my_lsflags_t *flgs,
+    char **buf, char const *path)
 {
     char file_path[1000] = {0};
     struct stat s;
@@ -63,7 +78,8 @@ static int file_stat(struct dirent *entry, my_lsflags_t *flgs, char **buf, char 
     return error;
 }
 
-int read_file(struct dirent *entry, my_lsflags_t *flgs, char **buf, char const *path)
+int read_file(struct dirent *entry, my_lsflags_t *flgs, char **buf,
+    char const *path)
 {
     if (entry->d_name[0] == '.' && !flgs->has_a)
         return 0;
