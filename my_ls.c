@@ -72,7 +72,7 @@ static int find_files(my_lsflags_t *flgs, char **s[3], int argc)
 int main(int argc, char **argv)
 {
     my_lsflags_t flgs = {false, false, false, false,
-        false, false, false, false, 0};
+        false, false, false, false, 0, 0, 0, 0};
     bool no_dir_arg = true;
     char *buffer = malloc(1);
     char **files = malloc(sizeof(char *));
@@ -88,8 +88,7 @@ int main(int argc, char **argv)
     if (no_dir_arg || argc == 1)
         add_file(".", &files);
     error |= find_files(&flgs, (char **[3]){ &buffer, argv, files }, argc);
-    my_nprintf(my_strlen(buffer) + (my_strlen(buffer) != 0 && flgs.has_d),
-        "%s\n", buffer);
+    my_nprintf(my_strlen(buffer) + (!flgs.has_l || flgs.has_d), "%s\n", buffer);
     free(buffer);
     return error;
 }

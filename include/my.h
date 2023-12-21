@@ -47,7 +47,10 @@ typedef struct {
     bool has_tmin;
     bool is_one;
     bool print_name;
-    int col_format;
+    int col_size;
+    int col_link;
+    int col_pw;
+    int col_gr;
 } my_lsflags_t;
 
 typedef struct {
@@ -72,7 +75,7 @@ int rmaj_flag_f(my_lsflags_t *);
 static my_lsstruct_t const ls_flgs[] = {
     {"a", a_flag_f},
     {"l", l_flag_f},
-    {"rmaj", rmaj_flag_f},
+    {"R", rmaj_flag_f},
     {"d", d_flag_f},
     {"r", r_flag_f},
     {"tmin", t_flag_f},
