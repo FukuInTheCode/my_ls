@@ -18,7 +18,10 @@
     #include <math.h>
     #include <stdlib.h>
     #include <sys/types.h>
+    #include <sys/stat.h>
     #include <dirent.h>
+    #include <pwd.h>
+    #include <grp.h>
     #include <criterion/criterion.h>
     #include <criterion/redirect.h>
 
@@ -44,6 +47,7 @@ typedef struct {
     bool has_tmin;
     bool is_one;
     bool print_name;
+    int col_format;
 } my_lsflags_t;
 
 typedef struct {

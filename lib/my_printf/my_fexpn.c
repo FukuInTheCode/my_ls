@@ -16,6 +16,7 @@ int my_fexpn(double x, int n, double *mantissa)
         ret++;
     for (; x < 1 && x != 0; x *= n)
         ret--;
-    *mantissa = x;
+    if (mantissa)
+        *mantissa = x;
     return ret;
 }

@@ -96,6 +96,7 @@ int s_format_f(char **, va_list, my_flags_t *);
 int rs_format_f(char **, va_list, my_flags_t *);
 
 int u_format_f(char **, va_list, my_flags_t *);
+int lu_format_f(char **, va_list, my_flags_t *);
 
 int f_format_f(char **, va_list, my_flags_t *);
 

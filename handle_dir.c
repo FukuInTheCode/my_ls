@@ -8,7 +8,7 @@
 
 #include "my.h"
 
-struct dirent **add_entry(struct dirent *entry, struct dirent ***files)
+static struct dirent **add_entry(struct dirent *entry, struct dirent ***files)
 {
     int len = 0;
     struct dirent **tmp = NULL;
@@ -28,6 +28,25 @@ static int my_revcmp(char *a, char *b)
     return my_strcmp(b, a);
 }
 
+static int find_col_format(struct dirent **files, my_lsflags_t *flgs, char const *path)
+{
+    struct stat s;
+    char complete_path[1000] = {0};
+    int error = 0;
+    int exp;
+
+    for (int i = 0; files[i]; i++) {
+        my_sprintf(complete_path, "%s/%s", path, files[i]->d_name);
+        if (path[my_strlen(path) - 1] == '/')
+            my_sprintf(complete_path, "%s%s", path, files[i]->d_name);
+        error |= stat(complete_path, &s);
+        exp = my_fexpn(s.st_size, 10, NULL) + 1;
+        (exp > flgs->col_format) && (flgs->col_format = exp);
+    }
+    my_printf("%d\n", flgs->col_format);
+    return error;
+}
+
 static int read_files(DIR *dir, my_lsflags_t *flgs, char **buf, char const *path)
 {
     struct dirent **files = malloc(sizeof(struct dirent *));
@@ -40,6 +59,7 @@ static int read_files(DIR *dir, my_lsflags_t *flgs, char **buf, char const *path
         add_entry(entry, &files);
     my_advanced_sort_entry_array(files, my_strcmp);
     flgs->has_r && my_advanced_sort_entry_array(files, my_revcmp);
+    find_col_format(files, flgs, path);
     for (int i = 0; files[i]; i++)
         error |= read_file(files[i], flgs, buf, path);
     return error;

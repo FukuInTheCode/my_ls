@@ -7,7 +7,7 @@
 
 #include "my.h"
 
-char *my_put_unbr(unsigned int nb)
+char *my_put_unbr(unsigned nb)
 {
     char *buffer = malloc(1);
     char tmp;
