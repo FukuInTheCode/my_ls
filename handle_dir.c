@@ -126,10 +126,11 @@ int read_dir(char const *path, my_lsflags_t *flgs, char **buf, bool is_last)
     if (!dir && error != ENOTDIR)
         return 84;
     if (flgs->has_d || error == ENOTDIR)
-        return handle_d_flag(flgs, path, is_last, buf);
+        return handle_d_flag(flgs, path, is_last, buf) | (0 & closedir(dir));
     flgs->print_name && add_buffer(buf, (void *)path, my_strlen(path));
     flgs->print_name && add_buffer(buf, ":\n", 2);
     error |= read_files(dir, flgs, buf, path);
     add_buffer(buf, "\n", !is_last);
+    closedir(dir);
     return error;
 }

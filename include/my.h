@@ -63,8 +63,8 @@ typedef struct {
 int my_strncmp(char const *, char const *, int);
 int my_strcmp(char const *, char const *);
 int my_revcmp(char const *, char const *);
-int my_timecmp(time_t, time_t);
-int my_revtimecmp(time_t, time_t);
+int my_timecmp(time_t, char const *, time_t, char const *);
+int my_revtimecmp(time_t, char const *, time_t, char const *);
 int my_advanced_sort_word_array(char **, int(*cmp)());
 int read_dir(char const *, my_lsflags_t *, char **, bool is_last);
 int read_file(struct dirent *, my_lsflags_t *, char **, char const *);
